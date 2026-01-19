@@ -7,8 +7,50 @@
   "tags": [],
   "targets": {
     "build": {
+      "executor": "@angular-architects/native-federation:build",
+      "options": {},
+      "configurations": {
+        "production": {
+          "target": "native-federation-locale-stackblitz:esbuild:production"
+        },
+        "development": {
+          "target": "native-federation-locale-stackblitz:esbuild:development",
+          "dev": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-architects/native-federation:build",
+      "options": {
+        "target": "native-federation-locale-stackblitz:serve-original:development",
+        "rebuildDelay": 500,
+        "dev": true,
+        "cacheExternalArtifacts": false,
+        "port": 0
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@angular/build:unit-test",
+      "options": {}
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "native-federation-locale-stackblitz:build",
+        "staticFilePath": "dist/apps/native-federation-locale-stackblitz/browser",
+        "spa": true
+      }
+    },
+    "esbuild": {
       "executor": "@angular/build:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/native-federation-locale-stackblitz",
         "browser": "apps/native-federation-locale-stackblitz/src/main.ts",
@@ -20,7 +62,12 @@
             "input": "apps/native-federation-locale-stackblitz/public"
           }
         ],
-        "styles": ["apps/native-federation-locale-stackblitz/src/styles.scss"]
+        "styles": [
+          "apps/native-federation-locale-stackblitz/src/styles.scss"
+        ],
+        "polyfills": [
+          "es-module-shims"
+        ]
       },
       "configurations": {
         "production": {
@@ -46,33 +93,20 @@
       },
       "defaultConfiguration": "production"
     },
-    "serve": {
+    "serve-original": {
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "native-federation-locale-stackblitz:build:production"
+          "buildTarget": "native-federation-locale-stackblitz:esbuild:production"
         },
         "development": {
-          "buildTarget": "native-federation-locale-stackblitz:build:development"
+          "buildTarget": "native-federation-locale-stackblitz:esbuild:development"
         }
       },
-      "defaultConfiguration": "development"
-    },
-    "lint": {
-      "executor": "@nx/eslint:lint"
-    },
-    "test": {
-      "executor": "@angular/build:unit-test",
-      "options": {}
-    },
-    "serve-static": {
-      "continuous": true,
-      "executor": "@nx/web:file-server",
+      "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "native-federation-locale-stackblitz:build",
-        "staticFilePath": "dist/apps/native-federation-locale-stackblitz/browser",
-        "spa": true
+        "port": 4200
       }
     }
   }
